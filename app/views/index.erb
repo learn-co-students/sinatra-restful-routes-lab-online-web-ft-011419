@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Recipes</title>
+  </head>
+  <body>
+
+<h1>Recipes:</h1>
+<% @recipes.each do |a| %>
+  <div class="recipe">
+    <a href="/recipes/<%= a.id %>">
+    <h2><%= a["name"] %></h2>
+    Ingredients: <%= a["ingredients"] %><br>
+    Cook Time: <%= a["cook_time"] %><br>
+
+  </div><br>
+<% end %>
+</body>
+</html>
