@@ -1,0 +1,12 @@
+<h1>Welcome to RecipeRama!</h1>
+<h2>Where it's FOOD for THOUGHT!</h2>
+
+<ul>
+<% @recipes.each do |recipe|%>
+  <li>
+    <a href="/recipes/<%= recipe.id %>">Name: <%= recipe.name %></a>
+    Ingredients: <%= recipe.ingredients %>
+    Cook time <%= recipe.cook_time %>
+  </li>
+<% end %>
+</ul>
