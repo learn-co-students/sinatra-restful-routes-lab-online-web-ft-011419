@@ -1,0 +1,89 @@
+get '/' do
+erb :home
+
+^base homepage at start-up
+#####################################################################
+INDEX ACTION
+
+get '/articles' do
+@articles = Articles.all
+erb :index
+
+^get request to retrieve all the contents of the hash from the index through thte instance variable @articles
+
+#####################################################################
+NEW ACTION
+
+get '/articles/new' do
+erb :new
+end
+
+post '/articles/' do
+@article = Articles.create(:title => params[:title], :content => params[:content])
+redirect '/articles/#{@article.id}'
+end
+
+^here we have two controllers.  The first will load a page with a form that will ask us to add article details.  When we POST the information, the page will redirect us to the article page associated with its :id (article.id) and save the information to the params hash. Our redirect is the SHOW page
+
+#####################################################################
+SHOW ACTION
+
+get '/articles/:id' do
+@article = Article/find_by_id(params[:id])
+erb :show
+end
+
+^this get request will allow us to find out article by its params id and bring us to the show page 
+
+#####################################################################
+PATCH EDIT ACTION
+
+get '/articles/:id/edit' do
+@article = Article.find_by(params[:id])
+erb :edit
+end
+
+^ this method will create a GET request to the articles/:id/edit page.  It will load the form edit page.  set articles to an instance varbiable @article.  Because this route uses a dynamic URL we can access the ID of the article through the params hash. 
+
+patch '/articles/:id do 
+@articles = Article.find_by_id(params[:id])
+@article.title = params[:title]
+@article.content = params[:content]
+@article.save
+redirect to "/articles/#{@article.id}"
+end
+
+^ these two methods will find out article by ID, then patch the request will update the article params based on the user input in our form.  This Patch request will submit and display our changes.  To make this work we will need to use a hidden form request:
+
+<form action='/articles/<=@article.id%>' method='POST'>
+<input id="hidden" type="hidden" name="_method" value="patch">
+<input type="text" name="title">
+<input type="text" name="content">
+<input type="submit value="submit">
+</form>
+
+the line below allows us to patch the values of our article.
+<input id="hidden" type="hidden" name="_method" value="patch">
+
+HOWEVER TO MAKE THIS WORK WE MUST USE Rack::MethodOverride!
+Put  'use Rack::MethodOverride' above your run file in config.ru
+the method will look at any name="_method" and interpret it.  
+
+You must also add this to all controllers where you want to access the functionality of 'use Rack::MethodOverride' for patch, put and delete.
+
+#####################################################################
+DELETE ACTION
+
+delete '/articles/:id/delete' do 
+@article = Article.find_by_id(params[:id])
+@article.delete
+redirect '/articles'
+end
+
+^the article show page will have a delete form.  Just as the patch form, this form must have a hidden delete form in side of it:
+
+<form action='/articles/:id/<%= @article.id %>/delete' method="post">
+<input id="hidden" type="hidden" name="_method" value="delete">
+<input type="submit" value="submit">
+</form>
+######################################################################
